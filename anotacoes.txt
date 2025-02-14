@@ -1,0 +1,33 @@
+VISÃO GERAL DO PROBLEMA
+
+ESTRATÉGIAS
+- Explorar os dados e entender o que temos de variáveis (completude, tipos, etc.)
+- Explorar variável target (balanceamento)
+- Fazer alguns tratamentos iniciais nos dados
+- Entender qual é a melhor estratégia para tratar variáveis com muitos missing
+    - Pode ser que mesmo que não haja muita completude, ainda seja de relevância
+- Selecionar variáveis para treinar de fato o modelo
+    - fazer uma seleção com técnicas combinadas, tomando como base o uso de uma variável random
+    - tirar multicolinearidade
+- Fazer tratamento de outliers
+    - Não remover, deixar lá talvez seja melhor
+    - Limitar por alguma regra e talvez marcar como sendo outlier seja ideal (variável binária)
+- Não utilizar técnicas de redução de dimensionalidade
+    - Apesar de poder aprimorar performance (computacional e de modelo), perde-se explicabilidade
+        - No contexto de crédito, saber explicar com base nas variáveis é algo crucial
+- Atentar com balanceamento
+    - Class Weight
+    - Técnicas de balanceamento
+    - Pode afetar calibragem
+- Testar N modelos bases para ver desempenho (mais curiosidade)
+    - LogisticRegression, LightGBM
+    - aqui vai ser mais uma prova de conceito, no final queremos um modelo que seja bom e simples ao mesmo tempo
+        - dentro do contexto de crédito, não vale criar modelos que sejam muito caixa preta, já que muitas vezes deve-se saber explicar o resultado
+        - provavelmente escolherei usar uma Logistic Regression
+    - avaliar as métricas geradas
+- Fazer tunagem de hiperparâmetros
+    - utilizar PRAUC como métrica de escolha do best model
+- Avaliar métricas de classificação do modelo no geral e capturar insights
+- Se fosse outro modelo, talvez seria melhor usar uma calibragem, mas Logistic Regression já é calibrada naturalmente
+    - Aqui é importante ser calibrada porque no final das contas a probabilidade é usada para definir o nível de risco
+    
