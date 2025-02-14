@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import roc_curve, auc, precision_recall_curve
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 class ClipTransformer(BaseEstimator, TransformerMixin):
     """
@@ -167,3 +168,72 @@ def plot_precision_recall_curve(y_true, y_scores):
     plt.show()
 
     return pr_auc_score
+
+
+def plot_mean_by_category(df: pd.DataFrame, category_col: str, value_col: str):
+    """
+    Plota um gráfico de barras com a média de uma variável contínua para cada faixa categórica.
+
+    Parâmetros:
+    df (pd.DataFrame): DataFrame contendo os dados.
+    category_col (str): Nome da coluna categórica (faixas).
+    value_col (str): Nome da variável contínua para calcular a média.
+
+    Retorna:
+    None: Exibe o gráfico.
+    """
+    try:
+        # Verifica se as colunas existem no DataFrame
+        if category_col not in df.columns or value_col not in df.columns:
+            raise ValueError("As colunas especificadas não existem no DataFrame.")
+
+        # Calcula a média da variável contínua para cada faixa categórica
+        mean_values = df.groupby(category_col)[value_col].mean().reset_index()
+
+        # Ordena as categorias se forem intervalos
+        mean_values = mean_values.sort_values(by=category_col)
+
+        # Configuração do gráfico
+        plt.figure(figsize=(8, 4))
+        sns.barplot(data=mean_values, x=category_col, y=value_col, palette="Blues")
+
+        # Ajuste dos rótulos e título
+        plt.xlabel("Faixa")
+        plt.ylabel(f"Média de {value_col}")
+        plt.title(f"Média de {value_col} por Faixa")
+        plt.xticks(rotation=45)
+
+        # Exibir o gráfico
+        plt.show()
+
+    except Exception as e:
+        print(f"Erro ao gerar o gráfico: {e}")
+        
+def plot_stacked_bar_chart(df, faixa_col, cat_col):
+    """
+    Plota um gráfico de barras empilhadas com a quantidade de cada categoria por faixa.
+    
+    Parâmetros:
+    df : pd.DataFrame
+        DataFrame contendo os dados.
+    faixa_col : str
+        Nome da coluna correspondente às faixas.
+    cat_col : str
+        Nome da coluna categórica.
+    """
+    plt.figure(figsize=(8, 4))
+    
+    # Criando tabela de contingência
+    contingency_table = df.pivot_table(index=faixa_col, columns=cat_col, aggfunc='size', fill_value=0)
+    
+    # Plotando gráfico de barras empilhadas
+    contingency_table.plot(kind='bar', stacked=True, colormap='viridis', figsize=(12, 6))
+    
+    plt.xlabel(faixa_col)
+    plt.ylabel("Quantidade")
+    plt.title("Distribuição de Categorias por Faixa")
+    plt.legend(title=cat_col)
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()
+    
